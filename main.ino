@@ -16,10 +16,14 @@ int NombreCibles = 3;
 int Target1Status=0;
 int Target2Status=0;
 int Target3Status=0;
+// Timer variables
 int MillisTimer = millis();
 int timer = 60;
 int oldMillisTimer = 0;
+
 int score;
+int bestScore[] = {0, 0, 0};
+
 bool scoreDisplay = false; 
 bool goDisplay = false;
 
@@ -377,7 +381,17 @@ void EndGame() {
     lcd.setCursor(3, 0);
     lcd.print("Score:");
 
-    score = (Target1Status + Target2Status + Target3Status) * 3 + timer;
+    score = timer * 10;
+
+    if (score > bestScore[0]) {
+      bestScore[0] = score;
+    } 
+    else if (score > bestScore[1] && score < bestScore[1]) {
+      bestScore[1] = score;
+    } 
+    else if (score > bestScore[2] && score < bestScore[2]) {
+      bestScore[2] = score;
+    }
 
     lcd.setCursor(9, 0);
     lcd.print(score);
