@@ -3,7 +3,7 @@
 LiquidCrystal_I2C lcd(0x27,20,4);
 #include <Adafruit_NeoPixel.h>
 #include <Keyboard.h>
-#define PIN        8 // LED devant le boitier 
+#define PIN        4 // LED devant le boitier 
 #define NUMPIXELS 3  // Nombre de LED
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 const int reserveLedCible = -1; 
@@ -161,26 +161,35 @@ void startGame() {
     cibleTours = random(1, 3);
     SoundBuzzer();
   }*/
-  lcd.home();
-  lcd.print(timer);
+  statusBoutonG = digitalRead(boutonG);
+  if (statusBoutonG==LOW) {
+    cibleTours = random(0, 3);
+  }
+
 
   if (timer > 5) {
     timer -= 1;
+    lcd.setCursor(9, 2);
+    lcd.print(timer);
+    lcd.setCursor(11, 2);
+    lcd.print("s");
   } 
-  else if (timer < 5) {
+  else if (timer < 10 && timer > 0) {
     timer -= 1;
+    lcd.setCursor(10, 2);
+    lcd.print(timer);
+    lcd.setCursor(11, 2);
+    lcd.print("s");
+
     tone(Buzzer, 1500, 500);
-    delay(1000);
-    noTone(Buzzer);
   }
-  else if (timer == 0) {
+  else if (timer <= 0) {
+    noTone(Buzzer);
     EndGame();
   }
 
-  lcd.setCursor(4, 2);
-  lcd.print(String(random(0, 3)));
-
-  pixels.setPixelColor(random(0, 3), pixels.Color(0, 0, 255));
+  pixels.clear();
+  pixels.setPixelColor(cibleTours, pixels.Color(0, 0, 255));
   pixels.show();
 
   delay(1000);
