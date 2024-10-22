@@ -37,8 +37,8 @@ byte f_letter[] = {
   B11111,
   B10000,
   B10000,
-  B10000,
   B11100,
+  B10000,
   B10000,
   B10000,
   B10000
@@ -64,6 +64,17 @@ byte n_letter[] = {
   B10101,
   B10011,
   B10001
+};
+
+byte blank[] = {
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000
 };
 
 void setup() {
@@ -167,15 +178,19 @@ void startGame() {
   }
 
 
-  if (timer > 5) {
+  if (timer > 10) {
     timer -= 1;
     lcd.setCursor(9, 2);
     lcd.print(timer);
     lcd.setCursor(11, 2);
     lcd.print("s");
   } 
-  else if (timer < 10 && timer > 0) {
+  else if (timer <= 10 && timer > 0) {
     timer -= 1;
+    lcd.createChar(0, blank);
+    lcd.setCursor(9, 2);
+    lcd.write(0);
+
     lcd.setCursor(10, 2);
     lcd.print(timer);
     lcd.setCursor(11, 2);
@@ -196,17 +211,8 @@ void startGame() {
 }
 
 void EndGame() {
-  lcd.createChar(0, f_letter);
   lcd.setCursor(5, 2);
-  lcd.write(0);
-
-  lcd.createChar(0, f_letter);
-  lcd.setCursor(6, 2);
-  lcd.write(0);
-
-  lcd.createChar(0, f_letter);
-  lcd.setCursor(7, 2);
-  lcd.write(0);
+  lcd.print("FIN DU JEU");
 }
 
 void Square(int posX, int posY) {
