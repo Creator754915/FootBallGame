@@ -271,18 +271,18 @@ void loop()
       AffichageTimer();
     }
 
-    if (timer < 10) {
-      tone(Buzzer, 1000, 1000);
+    if (timer < 10 && timer > 0) {
+      LowTime();
     }
-    else if (timer == 0) {
-      tone(Buzzer, 1000, 1000);
-      GameState = 3;
+    else if (timer <= 0) {
+      tone(Buzzer, 1500, 1000);
+      EndGame();
     }
   }
   else if (GameState == 3) {
     EndGame();
   }
-
+  
   if(!digitalRead(BoutonGauche)) {
     Replay();
   }
@@ -370,7 +370,7 @@ void EcranGo()
     printBigNum(18, 7, 1);
     printBigNum(26, 11, 1);
     tone(Buzzer,1000,1000); 
-    delay(2000);
+    delay(1000);
   } 
 }
 
@@ -421,6 +421,13 @@ void soundHit(){
   tone(Buzzer,1319,600);
   delay(600);
   noTone(Buzzer);
+}
+
+void LowTime() {
+  tone(Buzzer, 1000, 1000);
+  delay(100);
+  tone(Buzzer, 1000, 1000);
+  delay(100);
 }
 
 void AffichageTimer(){
