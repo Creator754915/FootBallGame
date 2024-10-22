@@ -7,8 +7,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);
 #define NUMPIXELS 3  // Nombre de LED
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 const int reserveLedCible = -1; 
-int intensiteLed=255;
-int nbCibles=3;
+int intensiteLed = 255;
+int nbCibles = 3;
 int boutonG = 8;
 int boutonD = 9;
 int cible1 = 5;
@@ -17,8 +17,54 @@ int cible3 = 7;
 int Buzzer = 2;
 int statusBoutonG, statusBoutonD, boule1, boule2, boule3;
 int cibleTours;
+int timer = 60;
 
 int score;
+int bestScore[] = {0, 0, 0};
+
+byte underscore[] = {
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B11111,
+  B11111
+};
+
+byte f_letter[] = {
+  B11111,
+  B10000,
+  B10000,
+  B10000,
+  B11100,
+  B10000,
+  B10000,
+  B10000
+};
+
+byte i_letter[] = {
+  B11111,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B00100,
+  B11111
+};
+
+byte n_letter[] = {
+  B10001,
+  B11001,
+  B10101,
+  B10101,
+  B10101,
+  B10101,
+  B10011,
+  B10001
+};
 
 void setup() {
   pinMode(boutonG, INPUT_PULLUP);
@@ -26,16 +72,24 @@ void setup() {
   pinMode(cible1,INPUT);
   pinMode(cible2,INPUT); 
   pinMode(cible3,INPUT);
+
+  // Initialiser les LEDS et l'ecran
   pixels.begin();
   pixels.clear();
   pixels.show();
   lcd.init();
   lcd.backlight();
   
+  // Définir une seed random grâce au port Analogique 0
   Serial.begin(9600);
   randomSeed(analogRead(0));
+
+  SoundBuzzer();
   
   AfficherMain();
+
+  delay(5000);
+  lcd.clear();
 }
 
 void loop() {
@@ -92,8 +146,74 @@ void getStatus() {
 }
 
 void startGame() {
-  delay(5000);
-  lcd.noDisplay();
-  
+  lcd.setCursor(4, 0);
+  lcd.print("Vise le trou");
 
+  /*if(digitalRead(cible1) == LOW) {
+    cibleTours = random(1, 3);
+    SoundBuzzer();
+  } 
+  else if (digitalRead(cible2) == LOW) {
+    cibleTours = random(1, 3);
+    SoundBuzzer();
+  }
+  else if (digitalRead(cible3) == LOW) {
+    cibleTours = random(1, 3);
+    SoundBuzzer();
+  }*/
+  lcd.home();
+  lcd.print(timer);
+
+  if (timer > 5) {
+    timer -= 1;
+  } 
+  else if (timer < 5) {
+    timer -= 1;
+    tone(Buzzer, 1500, 500);
+    delay(1000);
+    noTone(Buzzer);
+  }
+  else if (timer == 0) {
+    EndGame();
+  }
+
+  lcd.setCursor(4, 2);
+  lcd.print(String(random(0, 3)));
+
+  pixels.setPixelColor(random(0, 3), pixels.Color(0, 0, 255));
+  pixels.show();
+
+  delay(1000);
+}
+
+void EndGame() {
+  lcd.createChar(0, f_letter);
+  lcd.setCursor(5, 2);
+  lcd.write(0);
+
+  lcd.createChar(0, f_letter);
+  lcd.setCursor(6, 2);
+  lcd.write(0);
+
+  lcd.createChar(0, f_letter);
+  lcd.setCursor(7, 2);
+  lcd.write(0);
+}
+
+void Square(int posX, int posY) {
+  lcd.createChar(0, underscore);
+  lcd.setCursor(posX, posY);
+  lcd.write(0);
+
+  lcd.createChar(0, underscore);
+  lcd.setCursor(posX + 1, posY);
+  lcd.write(0);
+
+  lcd.createChar(0, underscore);
+  lcd.setCursor(posX, posY+1);
+  lcd.write(0);
+
+  lcd.createChar(0, underscore);
+  lcd.setCursor(posX + 1, posY + 1);
+  lcd.write(0);
 }
