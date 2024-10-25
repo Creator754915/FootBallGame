@@ -1,6 +1,3 @@
-//YWROBOT
-//Compatible with the Arduino IDE 1.0
-//Library version:1.1
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
@@ -270,10 +267,9 @@ void loop()
       oldMillisTimer = MillisTimer;
       AffichageTimer();
     }
-
-    if (timer < 10 && timer > 0) {
+    /*else if (time > 0 && time < 11) {
       LowTime();
-    }
+    }*/
     else if (timer <= 0) {
       tone(Buzzer, 1500, 1000);
       EndGame();
@@ -290,6 +286,7 @@ void loop()
 
 void debug()
 {
+  
   Serial.print("btG = ");
   Serial.print(digitalRead(BoutonGauche));
   Serial.print(" btD = ");
@@ -300,30 +297,28 @@ void debug()
   Serial.print(digitalRead(Cible2));
   Serial.print(" cible3 = ");
   Serial.println(digitalRead(Cible3));
-  if (! digitalRead(Cible1)){
+  if (!digitalRead(Cible1)){
       pixels.setPixelColor(0, pixels.Color(0, 250, 0));
       pixels.show();
-      
+      tone(Buzzer, 450, 500);
+  }
+  else if (!digitalRead(Cible2)){
+    pixels.setPixelColor(1, pixels.Color(0, 250, 0));
+    pixels.show();    
+    tone(Buzzer, 450, 500);
+  }
+  else if (!digitalRead(Cible3)) {
+    pixels.setPixelColor(2, pixels.Color(0, 250, 0));
+    pixels.show();    
+    tone(Buzzer, 450, 500);
   }
   else{
     pixels.setPixelColor(0, pixels.Color(0, 0, 0));
     pixels.show();
-  }
-    
-  if (! digitalRead(Cible2)){
-    pixels.setPixelColor(1, pixels.Color(0, 250, 0));
-    pixels.show();     
-  } else{
     pixels.setPixelColor(1, pixels.Color(0, 0, 0));
-    pixels.show();     
-  }
-    
-  if (! digitalRead(Cible3)){
-    pixels.setPixelColor(2, pixels.Color(0, 250, 0));
-    pixels.show();     
-  } else {
+    pixels.show();
     pixels.setPixelColor(2, pixels.Color(0, 0, 0));
-    pixels.show();     
+    pixels.show();
   }
 }
 
@@ -423,12 +418,12 @@ void soundHit(){
   noTone(Buzzer);
 }
 
-void LowTime() {
+/*void LowTime() {
   tone(Buzzer, 1000, 1000);
   delay(100);
   tone(Buzzer, 1000, 1000);
   delay(100);
-}
+}*/
 
 void AffichageTimer(){
   lcd.clear();
